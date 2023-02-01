@@ -7,7 +7,7 @@ import { widthPercentageToDP as wp,heightPercentageToDP as hp } from 'react-nati
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal from "react-native-modal";
 
-const PrintComponent = ({data,getData}) => {
+const PrintComponent = ({data,getData,detailsData}) => {
 
     
     const [deleteConfirm,setDeleteConfirm] = useState(false);
@@ -16,11 +16,28 @@ const PrintComponent = ({data,getData}) => {
         var htmlContent;
         var total;
         htmlContent='<div>'+
+        detailsData.map((item,index)=>{
+            return(
+            `
+            <div>
+            <div style='display:flex;flex-direction:row;align-items:center;justify-content:space-between;
+            width: 60%;padding:0px 10px;margin: auto;background:#333333'>
+            <h4 style='font-size: 20px;color:white'>${item.title}</h4>
+            <h4 style='font-size: 20px;;color:white'>${item.value}</h4>
+            </div>
+            <hr style="width: 50%;margin: auto;"/>
+        </div>   
+            `
+        )}
+
+        )
+        +
         data.map((entry,i)=>{
             total=0
         return(
             `<div>
-        <h2>${entry.date}</h2>
+            <br/><br/><br/>
+        <h2 style='text-decoration:underline' >${entry.date}</h2>
         `+
         entry.hisaabArray.map((item,index)=>{
             total = total+Number(item.amount)
@@ -28,7 +45,7 @@ const PrintComponent = ({data,getData}) => {
             `
             <div>
             <div style='display: flex;flex-direction: row;align-items: center;justify-content: space-between;
-            width: 50%;margin: auto;'>
+            width: 60%;margin: auto;padding:0px 10px;'>
             <h4 style='font-size: 20px;margin-top:0px'>${item.name}</h4>
             <h4 style='font-size: 20px;margin-top:0px'>${item.amount}</h4>
             </div>
@@ -40,9 +57,9 @@ const PrintComponent = ({data,getData}) => {
         )
         +
         `<div style='display: flex;flex-direction: row;align-items: center;justify-content: space-between;
-        width: 50%;margin: auto;'>
-        <h4 style='color:"green";font-size: 20px;'>Total</h4>
-        <h4 style='color:"green";font-size: 20px;'>${total}</h4>
+        width: 60%;margin: auto;padding:0px 10px;background:red'>
+        <h4 style='color:white;font-size: 20px;'>Total</h4>
+        <h4 style='color:white;font-size: 20px;'>${total}</h4>
         </div>
 `
         +'</div>'
@@ -132,7 +149,6 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     deleteImg:{
-        color:"#fff",
         height:wp(7),
         width:wp(5.5),
         borderRadius:5

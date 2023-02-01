@@ -9,6 +9,9 @@ import FormComponent from './components/FormComponent';
 import DataTableComponent from './components/DataTableComponent';
 import HeaderComponent from './components/HeaderComponent.js';
 import PrintComponent from './components/PrintComponent.js';
+import TabsComponent from './components/TabsComponent.js';
+import DetailsComponent from './components/DetailsComponent.js';
+
 import moment from 'moment';
 import { heightPercentageToDP as hp , widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
@@ -17,10 +20,23 @@ function App(){
 
   const [refresh,setRefresh] = useState(0)
   var [data,setData] = useState([])
-
+  const [currentTab,setCurrentTab] = useState('daily')
+  var [detailsData,setDetailsData] = useState([
+    {title:'Grand Total',value:0},
+    {title:'Start Date',value:'---'},
+    {title:'Total Days',value:0},
+    {title:'Entry Days',value:0},
+    {title:'Pay / Day',value:0},
+    {title:'Pay / Month',value:0},
+])
   useEffect(()=>{
     getData();
   },[])
+
+  useEffect(()=>{
+    handleGrandTotal()
+    handleDates()
+},[data])
 
 
   // fetching data function
@@ -81,15 +97,53 @@ function App(){
 
   }
 
+// total calculator in details
+  const handleGrandTotal =()=>{
+    detailsData[0].value=0
+    data?.map((hisaabArray,index)=>{
+        hisaabArray?.hisaabArray?.map((item,innerIndex)=>{
+          detailsData[0].value = detailsData[0].value + Number(item.amount)
+        })
+    })
+    // Pay / Day
+    detailsData[4].value= Math.floor(detailsData[0].value/data.length) + ' Rs'
+
+    // Pay / Month
+    detailsData[5].value= Math.floor((detailsData[0].value/data.length)*30 ) + ' Rs'
+
+    // Grand Total
+    detailsData[0].value= detailsData[0].value + ' Rs'        
+    setRefresh(prev=>prev+1)
+} 
+
+// handle details date entries
+const handleDates = ()=>{
+  detailsData[1].value = data[data.length-1]?.date
+    var prev = moment(detailsData[1].value,'DD/MMM/YYYY');
+    detailsData[2].value = moment().diff(prev,'days') + ' days';
+
+    detailsData[3].value = data.length + ' entries';
+    setRefresh(prev=>prev+1)
+}
+
   return (
     <SafeAreaView style={{minHeight:hp(100),backgroundColor:'#f2f2f2'}}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         >
           <HeaderComponent />
-          <PrintComponent data={data} getData={getData} />
+          <PrintComponent data={data}  detailsData={detailsData} getData={getData} />
           <FormComponent handleSubmit={handleSubmit} />
+         
+         <TabsComponent setCurrentTab={setCurrentTab} currentTab={currentTab} />
+         {
+          currentTab=='daily' &&
           <DataTableComponent handleClose={handleClose}  data={data} />
+         }
+         {
+          currentTab=='details' &&
+          <DetailsComponent data={detailsData} />
+         }
       </ScrollView>
     </SafeAreaView>
   );

@@ -46,7 +46,6 @@ const DataTableComponent = ({data,handleClose}) => {
                 }
                         <View style={styles.main}>
                         <View style={styles.firstDiv}>
-                                {/* <Image style={styles.closeImg} source={require('./../assets/Close.png')} /> */}
                             </View>
                             <View style={{...styles.secondDiv,...styles.common,...styles.total}}>
                             <Text style={styles.totalTxt}>
@@ -117,7 +116,6 @@ common:{
     backgroundColor:'#fff'
 },
 closeImg:{
-    color:'#333333',
     height:wp(4),
     width:wp(4)
 },
