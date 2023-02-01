@@ -11,7 +11,6 @@ import HeaderComponent from './components/HeaderComponent.js';
 import PrintComponent from './components/PrintComponent.js';
 import TabsComponent from './components/TabsComponent.js';
 import DetailsComponent from './components/DetailsComponent.js';
-
 import moment from 'moment';
 import { heightPercentageToDP as hp , widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
